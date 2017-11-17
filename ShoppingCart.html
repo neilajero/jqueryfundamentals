@@ -1,0 +1,310 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+        <title>Shopping Cart</title>
+    </head>
+    <script src="js/jquery-1.11.1.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+
+        var counter = 0;
+
+        $(document).ready(function() {
+
+            // Display shopping list
+            if ($('#tblShopList').find('tr[id*=trShopListItem]').length === 0) {
+                $('#tdShopList').hide();
+            }
+
+            // Add shopping item
+            $('#btnAdd').click(function() {
+
+                if($('#inputValue').val() === "") {
+                    alert("Please enter a valid name.");
+                    $.preventDefault;
+
+                } else {
+                    
+                    $('#tdShopList').show();
+
+                    counter = $('#tblShopList').find('tr[id*=trShopListItem]').length;
+
+                    var $shopListItem = "trShopListItem" + counter,
+                        $rowNum = "rowNum" + counter,
+                        $shopItem = "shopItem" + counter,
+                        $wlItem = "wlItem" + counter,
+                        $btnAddToCart = "btnAddToCart" + counter,
+                        $btnRemoveToList = "btnRemoveToList" + counter,
+                        $inputValue = $('#inputValue').val();
+
+                    // Append new row item
+                    $('#tblShopList').append("<tr id='"+ $shopListItem +"'><td><label id='"+ $rowNum +"'>"+ (counter+1) +"&rpar;</label></td><td style='padding-left: 20px'><label id='"+ $shopItem +"' type='text' name='shopItem'>"+ $inputValue +"</label></td><td style='padding-left: 20px'><input id='"+ $wlItem +"' type='checkbox' name='wlItem' class='checkWishlist'/></td><td style='padding-left: 20px'><button id='"+ $btnAddToCart +"' type='button' class='addToCart'>+</button></td><td style='padding-left: 20px'><button id='"+  $btnRemoveToList +"' type='button' class='removeToList'>-</button></td></tr>");
+
+                    // Display shopping list
+                    $('#tdShopList').show();   
+
+                    // Reset input value
+                    $('#inputValue').val('');
+
+                    counter++;
+                }
+            })
+
+            // Remove shop item
+            $('#tblShopList').delegate('.removeToList', 'click', function(e) {
+                $(this).closest('tr').remove();
+                reindexItems(this.id, 0);
+
+                // Display shopping list
+                if ($('#tblShopList').find('tr[id*=trShopListItem]').length === 0) {
+                    $('#tdShopList').hide();
+                }
+            });
+
+            // Re-index row items
+            function reindexItems(i, c) {
+
+                $('tr[id*=trShopListItem]').each(function() {
+
+                    var $shopListItem = "trShopListItem" + c,
+                        $rowNum = "rowNum" + c,
+                        $shopItem = "shopItem" + c,
+                        $wlItem = "wlItem" + c,
+                        $btnAddToCart = "btnAddToCart" + c,
+                        $btnRemoveToList = "btnRemoveToList" + c;
+
+                    $(this).attr("id", $shopListItem);
+                    $(this).find('td').each(function() {
+                        $(this).find('label').attr('id', $rowNum);
+
+                        var $newRowNum = "#" + $rowNum;
+                        $($newRowNum).text((c+1) + ")");
+                    })
+
+                    $(this).find('label').attr('id', $rowNum);
+                    $(this).find('input[name*=shopItem]').attr('id', $shopItem);
+                    $(this).find('input[name*=wlItem]').attr('id', $wlItem);
+                    $(this).find('.addToCart').attr('id', $btnAddToCart);
+                    $(this).find('.removeToList').attr('id', $btnRemoveToList);
+
+                    c++;
+                })
+            }
+
+            function reindexCartItems(i, c) {
+
+                $('tr[id*=trShopCartItem]').each(function() {
+
+                    var $trShopCartItem = "trShopCartItem" + c,
+                        $cartRowNum = "cartRowNum" + c,
+                        $cartItem = "cartItem" + c,
+                        $btnRemoveToCartList = "btnRemoveToCartList" + c;
+
+                    $(this).attr("id", $trShopCartItem);
+                    $(this).find('td').each(function() {
+                        $(this).find('label').attr('id', $cartRowNum);
+
+                        var $newCartRowNum = "#" + $cartRowNum;
+                        $($newCartRowNum).text((c+1) + ")");
+                    })
+
+                    $(this).find('label').attr('id', $cartRowNum);
+                    $(this).find('label[name*=cartItem]').attr('id', $cartItem);
+                    $(this).find('.removeToCartList').attr('id', $btnRemoveToCartList);
+
+                    c++;
+                })
+            }
+
+            // Add to cart
+            $("#tblShopList").delegate('.addToCart', 'click', function() {
+
+                $("#tdShopCart").show();
+                $("#tblCountShoppingCart").show();
+
+                var i = $(this).closest('tr').index();
+                var $cartItem = "cartItem" + i
+
+                // Validate if this item already exists
+                if(!$("#"+$cartItem).length > 0) {
+                    var $trShopCartItem = "trShopCartItem" + i,
+                        $cartRowNum = "cartRowNum" + i,
+                        $cartItem = "cartItem" + i,
+                        $wlItem = "wlItem" + i,
+                        $btnRemoveToCartList = "btnRemoveToCartList" + i,
+                        $shopItem = "shopItem" + i,
+                        $shopListItemName = $(this).closest('tr').find('label[name*="shopItem"]').html();
+
+                    // Append new row item
+                    $('#tblShopCart').append("<tr id='"+ $trShopCartItem +"'><td><label id='"+ $cartRowNum +"'>"+ i +"&rpar;</label></td><td><label id='"+ $cartItem +"' type='text' name='cartItem'>"+ $shopListItemName +"</label></td><td><button id='"+ $btnRemoveToCartList +"' type='button' class='removeToCartList'>-</button></td></tr>");
+                }
+            })
+
+            // Remove cart item
+            $('#tblShopCart').delegate('.removeToCartList', 'click', function(e) {
+                $(this).closest('tr').remove();
+                reindexCartItems(this.id, 0);
+
+                var itemText = "items";
+                var totalItem = $('#tblShopCart').find('tr[id*=trShopCartItem]').length;
+
+                if ($('#tblShopCart').find('tr[id*=trShopCartItem]').length == 1) {
+                    itemText = "item";
+                }
+                
+                $("#countCartItems label").html("You have (" + totalItem + ") " + itemText + " on your cart.")
+
+                // Display shopping list
+                if ($('#tblShopCart').find('tr[id*=trShopCartItem]').length === 0) {
+                    $('#tdShopCart').hide();
+                }
+            })
+
+            // Count wishlist item
+            $('#tblShopList').delegate('.checkWishlist', 'click', function(e) {
+                if($(this).is(':checked')) {
+                    $(this).closest('tr')
+                        .css("background-color", "yellow")
+                        .css("font-style", "italic");
+                    $("#tblWishlistButton").show();
+
+                    var $wishListItem = $(this).closest('tr').find('label[name*="shopItem"]').html();
+
+                    if($("#wishListItem li:contains("+ $wishListItem +")").length == 0){
+                        $("#wishListItem ul").append("<li>"+ $wishListItem +"</li>")
+                    }
+                } else {
+                    $(this).closest('tr')
+                        .css("background-color", "")
+                        .css("font-style", "");
+                    $("#tblWishlistButton").hide();
+                }
+
+            });
+
+            // Display my wishlist
+            $('#tblWishlistButton').delegate('.displayWishlist', 'click', function(e) {
+                $("#wishListItemHeader").show();
+                $("#wishListItem").show();
+
+                $('#tblShopList input:checked').each(function(){
+                    var $wishListItem = $(this).closest('tr').find('label[name*="shopItem"]').html();
+
+                    if($("#wishListItem li:contains("+ $wishListItem +")").length == 0){
+                        $("#wishListItem ul").append("<li>"+ $wishListItem +"</li>")
+                    }
+                })
+            });
+
+            // Count cart items
+            $('#tblCountShoppingCart').delegate('.displayTotalCartItems', 'click', function(e) {
+
+                if ($('#tblShopCart').find('tr[id*=trShopCartItem]').length > 0) {
+
+                    var itemText = "items";
+                    var totalItem = $('#tblShopCart').find('tr[id*=trShopCartItem]').length;
+
+                    if ($('#tblShopCart').find('tr[id*=trShopCartItem]').length == 1) {
+                        itemText = "item";
+                    }
+
+                    $("#countCartItems").show();
+                    $("#countCartItems label").html("You have (" + totalItem + ") " + itemText + " on your cart.")
+                }
+            })
+        });
+    </script>
+    <style>
+        #divMain{width:500px;height:600px;}
+        .colorRed{color:red;}
+        button{ width: 30px}
+        .seperator {
+            height: 100%;
+            width: 1px;
+            background: black;
+            top: 0;
+            bottom: 0;
+            position: absolute;
+            left: 50%;
+        }
+    </style>
+    <body>
+        <div id="divMain">
+            <form action="#" id="frmSignup" method="post">
+                <table>
+                    <tr>
+                        <td>
+                            <input id="inputValue" type="text" name="shopItemName" value="" />
+                        </td>
+                        <td><input type="button" value="Add to list" id="btnAdd" /></td>
+                    </tr>
+                </table>
+                <br/><br/>
+                <table id="tblShoppingList" style="width: 800px">
+                    <tr>
+                        <td id="tdShopList" style="width: 400px; display:none">
+                            <table id="tblShopList">
+                                <tr>
+                                    <td></td>
+                                    <td style="padding-left: 20px">
+                                        Shopping List
+                                    </td>
+                                    <td style="padding-left: 20px">
+                                        Wishlist
+                                    </td>
+                                    <td style="padding-left: 20px">
+                                        Add to cart
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td id="tdShopCart" style="width: 400px; padding-left: 20px; position: absolute; border-width: 1px; border-style: dotted; display: none;">
+                            <table id="tblShopCart">
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        Shopping Cart
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </table>
+                            <br/><br/>
+                            <table id="tblCountShoppingCart" style="display: none">
+                                <tr>
+                                    <td>
+                                        <button id='btnCountCartItems' type='button' class='displayTotalCartItems' style="width: 100px">Count</button>
+                                    </td>
+                                </tr>
+                                <tr id="countCartItems" style="display: none">
+                                    <td>
+                                        <label></label>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                <br/><br/>
+                <table id="tblWishlistButton" style="display: none">
+                    <tr>
+                        <td>
+                            <button id='btnDisplayWishlist' type='button' class='displayWishlist' style="width: 150px">Display Wishlist</button>
+                        </td>
+                    </tr>
+                    <tr id="wishListItemHeader" style="display: none">
+                        <td>
+                            <label>My Wishlists are</label>
+                        </td>
+                    </tr>
+                    <tr id="wishListItem" style="display: none">
+                        <td>
+                            <ul id="ulWishListItem"></ul>
+                        <td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </body>
+</html>
