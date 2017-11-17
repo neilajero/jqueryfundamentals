@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Grocery List Application</title>
+</head>
+<script src="js/jquery-1.11.1.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    
+    // Add Item
+    var counter = 0;
+	$(document).ready(function() {
+                
+        $('#btnAdd').click(function() {
+            
+            if($('#inputName').val() === "" || 
+               $.isNumeric($('#inputName').val())) {
+                
+                 alert("Please enter a valid name.");
+                 $.preventDefault;
+                
+             } else {
+                
+                if (counter === 0) {
+                    // Add values to first row
+                    $('#inputText0').val($('#inputName').val());
+                
+                } else {
+                    
+                    counter = $('#tableList').find('tr[id*=rowIndex]').length;
+
+                    var $rowIndex = "rowIndex" + counter;
+                    var $rowNum = "rowNum" + counter;
+                    var $inputName = $('#inputName').val();
+                    var $inputNameId = "inputNameId" + counter;
+                    var $inputPrice = "inputPrice" + counter;
+                    var $removeButton = "btnRemove" + counter;
+
+                   $('#tableList').append("<tr id='"+ $rowIndex +"'><td><label id='"+ $rowNum +"'>" +(counter+1) +"&rpar;</td><td><input id='"+ $inputNameId +"' type='text' name='name' value='"+ $inputName +"' class='required'/></td><td><input id='"+ $inputPrice +"' type='text' name='price' value='' class='required'/></td><td><button type='button' id='"+ $removeButton +"' class='remove'>-</button></td></tr>")
+                }    
+                 
+                // Reset Value
+                $('#inputName').val('');
+
+                counter++;                                                       
+             }
+        })
+
+        // Remove Item
+        $('#tableList').delegate('.remove', 'click', function(e) {
+            $(this).closest('tr').remove();
+            
+            newCounter = 0;
+            
+            reindexItems(this.id, newCounter);
+        });
+        
+        // Calculate Item
+        $('#btnCalculate').click(function() {
+            var $sum = 0;
+            var $msgResult = "";
+            $('input[name=price]').each(function() {
+                $sum += parseInt($(this).val());
+            });
+            
+            if ($.isNumeric($sum)) {
+                $msgResult = "<p>Hello <u>Neil</u> Your Total Price is Php" + $sum + "</p>";
+                $('#msgResult').append($msgResult)
+                $('#msgResult').show(); 
+            } else {
+                alert("Price should be a numeric value.");
+            }
+        })
+        
+        // Re-index row items
+        function reindexItems(i, c) {
+            
+            $('tr[id*=rowIndex]').each(function(){
+                
+                var $rowIndex = "rowIndex" + c;
+                var $rowNum = "rowNum" + c;
+                var $inputNameId = "inputNameId" + c;
+                var $inputPrice = "inputPrice" + c;
+                var $removeButton = "btnRemove" + c;
+
+                $(this).attr("id", $rowIndex);
+                $(this).find('td').each(function() {
+                    $(this).find('label').attr('id', $rowNum);
+                    
+                    var $newRowNum = "#" + $rowNum;
+                    $($newRowNum).text((c+1) + ")");
+                })
+                
+                $(this).find('label').attr('id', $rowNum);
+                $(this).find('input[name*=name]').attr('id', $inputNameId);
+                $(this).find('input[name*=price]').attr('id', $inputPrice);
+                $(this).find('.remove').attr('id', $removeButton);
+                
+                c++;
+            })
+        }
+        
+        // Validation
+        $('#inputName').change(function() {
+             if($.isNumeric($('#inputName').val())) {
+                 alert("Name should not be a number.");
+                 $.preventDefault;
+             }
+        })
+	});
+</script>
+<style>
+	#divMain{width:500px;height:600px;}
+	.colorRed{color:red;}
+    button{ width: 30px}
+</style>
+<body>
+	<div id="divMain">
+		<form action="#" id="frmSignup" method="post">
+            <table>
+                <tr>
+                    <td>Name<span class="colorRed">*</span></td>
+                    <td>
+                        <input id="inputName" type="text" name="name" value="" class="required"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td><input type="button" value="Add +" id="btnAdd" /></td>
+                </tr>
+            </table>
+            <br/><br/>
+            <table id="tableList">
+                <tr>
+                    <td></td>
+                    <td>
+                        Name
+                        <span class="colorRed">*</span>
+                    </td>
+                    <td>
+                       Price
+                       <span class="colorRed">*</span> 
+                    </td>
+                    <td>
+                       Remove
+                    </td>
+                </tr>
+                <tr id="rowIndex0">
+                    <td><label id="rowNum0">1&rpar;</label></td>
+                    <td>
+                        <input id="inputText0" type="text" name="name" value="" class="required"/>
+                    </td>
+                    <td>
+                        <input id="inputPrice0" type="text" name="price" value="" class="required"/>
+                    </td>
+                    <td>
+                        <button id="btnRemove0" type="button" class="remove">-</button>
+                    </td>
+                </tr>
+            </table>
+            <br/><br/>
+            <table>
+                <tr>
+                    <td>Discount</td>
+                    <td>
+                        <input type="text" name="discount" value=""/>
+                    </td>
+                    <td><input type="button" value="Calculate" id="btnCalculate" /></td>
+                </tr>
+            </table>
+            <div id="msgResult" style="display:none">
+            </div>
+        </form>
+	</div>
+</body>
+</html>
