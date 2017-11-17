@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+        <title>Ajax Exercise</title>
+    </head>
+    <script src="js/jquery-1.11.1.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $.ajax({ 
+                type: 'GET', 
+                url: 'https://jsonplaceholder.typicode.com/posts', 
+                data: { get_param: 'value' }, 
+                dataType: 'json',
+                success: function (data) { 
+                    $.each(data, function(i, e) {
+                        $('#itemDescrtion')
+                            .append("<p id='"+ i +"' style='display: none'><b>Content:</b> "+ e.body +"</p>");
+                        $('#tblResult')
+                            .append("<tr style='border: 1px solid black;'><td style='border: 1px solid black;'>"+ e.id +"</td><td style='border: 1px solid black;'>"+ e.userId +"</td><td style='border: 1px solid black;'>"+ e.title +"</td><td style='border: 1px solid black; width: 60px'><button type='button' class='showDescription' style='width: 60px'>View</button></td></tr>");
+                    });
+                }
+            });
+            
+            var previousIndex = 0;
+            $('#tblResult').delegate('.showDescription', 'click', function(e) {
+                var i = $(this).closest('tr').index();
+                $("#itemDescrtion p").hide();
+                $("#itemDescrtion p:eq("+ i +")").show();
+            });
+        });
+    </script>
+    <style>
+        #divMain{width:500px;height:600px;}
+        .colorRed{color:red;}
+        button{ width: 30px}
+    </style>
+    <body>
+        <div id="divMain">
+            <div id="itemDescrtion">
+            </div>
+            <table id="tblResult" style="border: 1px solid black;">
+                <tr style="border: 1px solid black;">
+                    <td style="border: 1px solid black;">ID</td>
+                    <td style="border: 1px solid black;">User ID</td>
+                    <td style="border: 1px solid black;">Title</td>
+                    <td style="border: 1px solid black;">View</td>
+                </tr>
+            </table>
+        </div>
+    </body>
+</html>
