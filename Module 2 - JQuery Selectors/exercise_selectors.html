@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Exercise 1 - JQuery Selectors</title>
+</head>
+<script src="../js/jquery-1.11.1.min.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		// 1. When button with id = btnTriggerChange is clicked 
+		// trigger code underneath it
+		$('#btnTriggerChange').click(function(){
+			// 2. Add border color red to the <div> element with class = "main"
+			$('.main').css('border-color','red');
+			// 3. Replace 1st <li> element text from Child 1 to Childish
+			$('li:first').text('Childish');
+			// 4. Add font style ITALIC into Great Grand Child 4 
+			// which is under Grand Child 1
+			$('[special]').css('font-style','italic'); 
+			// 5. Add background-color yellow into 2nd <li> element Child 2
+			$('.main > ol > li:nth-child(2)').css('background-color','yellow');
+			// 6 and 7. Add class .backgroundLightBlue and .backgroundLightGreen for 
+			// submenu elements under Child 3 , the class should be added altenately 
+			// starting with .backgroundLightBlue
+			$('.main > ol > li:nth-child(3) > ol > li:odd').addClass('backgroundLightBlue');
+			$('.main > ol > li:nth-child(3) > ol > li:even').addClass('backgroundLightGreen');
+		});
+	});
+</script>
+<style>
+	.main{
+		width: 500px;
+		height: 500px;
+		border-style: solid;
+	}
+	.menu{
+		font-color: green;
+		font-size: 2em;
+	}
+	.submenu{
+		font-color: blue;
+		font-size: 1em;
+	}
+	.backgroundLightBlue{
+		background-color: #00CCFF;
+	}
+	.backgroundLightGreen{
+		background-color: #33FF99;
+	}
+</style>
+<body>
+	<div class="main">
+			<ol>
+				<li class="menu">Child 1</li>
+				<li class="menu">Child 2
+					<ol>
+						<li class="submenu">Grand Child 1
+							<ol>
+								<li class="submenu">Great Grand Child 1</li>
+								<li class="submenu">Great Grand Child 2</li>
+								<li class="submenu">Great Grand Child 3</li>
+								<li class="submenu" special="true">Great Grand Child 4</li>
+							</ol>
+						</li>
+					</ol>
+				</li>
+				<li class="menu">Child 3
+					<ol>
+						<li class="submenu">Grand Child 1</li>
+						<li class="submenu">Grand Child 2</li>
+						<li class="submenu">Grand Child 3</li>
+						<li class="submenu">Grand Child 4</li>
+					</ol>
+				</li>
+			</ol> 
+	</div>
+	<div>
+		<input id="btnTriggerChange" type="button" value="Trigger Change"></input>
+	</div>
+</body>
+</html>
