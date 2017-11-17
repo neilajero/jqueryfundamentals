@@ -26,8 +26,14 @@
             var previousIndex = 0;
             $('#tblResult').delegate('.showDescription', 'click', function(e) {
                 var i = $(this).closest('tr').index();
+                
+                // Hide all
                 $("#itemDescrtion p").hide();
-                $("#itemDescrtion p:eq("+ i +")").show();
+                $("#tblResult tr").css("background-color", "");
+                
+                // Show specific index
+                $("#tblResult tr:eq("+ i +")").css("background-color", "yellow");
+                $("#itemDescrtion p:eq("+ i +")").fadeIn("slow");
             });
         });
     </script>
