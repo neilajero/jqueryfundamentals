@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>JQuery Events</title>
+</head>
+<script src="../js/jquery-1.11.1.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+        
+        $('#btnSignUp').click(function() {
+            $('#divForm').show();
+        })
+        
+        $('#divForm').submit(function() {
+            
+            var isValid = true;
+            
+            $('input[type!="button"]').attr('class', 'required').each(function(){
+                if ($(this).val() === "") {
+                    alert("All fields with (*) are required.");
+                    return isValid = false;
+                }
+            })
+            
+            if (!isValid) {
+                return false;
+            }
+        })
+        
+        $('input[name="cnfPassword"]').change(function() {
+            var $inputPassword = $('input[name="password"]').val();
+            var $inputCnfPassword = $('input[name="cnfPassword"]').val();
+            
+            if ($inputPassword != $inputCnfPassword) {
+                alert("Confirm Password should be equal with Password.");
+                return false;
+            }
+        })
+	});
+</script>
+<style>
+	div{border-bottom-style: solid;}
+	#divMain{width:500px;height:600px;}
+	#divForm {display: none;}
+	.colorRed{color:red;}
+</style>
+<body>
+	<div id="divMain">
+		<div>
+			<input type="button" id="btnSignUp" value="Sign Up"/>	
+		</div>	
+		<div id="divForm">
+			<form action="#" id="frmSignup" method="post">
+				<table>
+					<tr>
+						<td><span class="colorRed">*</span>User Name</td>
+						<td>
+							<input type="text" name="username" 
+								   value="" class="required"/>
+						</td>
+					</tr>
+					<tr>
+						<td><span class="colorRed">*</span>Password</td>
+						<td>
+							<input type="password" name="password" 
+								   value="" class="required"/>
+						</td>
+					</tr>
+					<tr>
+						<td><span class="colorRed">*</span>Confirm Password</td>
+						<td>
+							<input type="password" name="cnfPassword"
+								   value="" class="required"/>
+						</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+						<td><input type="submit" value="Submit" /></td>
+					</tr>
+				</table>
+			</form>
+		</div>
+	</div>
+</body>
+</html>
